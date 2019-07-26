@@ -1,51 +1,30 @@
 let btn = document.getElementById("btn");
 let users = document.getElementById("users");
 let h1 = document.getElementById("h1");
+let output = "";
 
 btn.addEventListener("click" , function() {
 
-	let xhr = new XMLHttpRequest();
+h1.textContent = "Loading...";
+fetch("https://api.github.com/users").then((response) => {
+	return response.json();
+}).then((data) => {
 
-	xhr.open("GET","https://api.github.com/users",true);
-   
+data.forEach(function (item) {
+	output+= "<div class = 'user'>" + 
+		"<img src=" + item.avatar_url + " width = '80' height = '80'>" +
+ 		"<ul>" +
+ 		"<li>Login: " + item.login + "</li>" +
+ 		"<li>Id: " + item.id + "</li>" +
+ 		"</ul>" +
+ 		"</div>";
 
-	xhr.onloadstart = function () {
-		
-		h1.textContent = "Loading...";
-	}
+users.innerHTML = output;
+h1.textContent = "";
+  });
 
+});
 
-
-xhr.onload = function() {
-
-	h1.textContent = "";
-	if (this.status == 200) {
-
-	let user = JSON.parse(this.responseText);
-	let output = "";
-
-	for(let i = 0; i < user.length; i++) {
-		output+= "<div class = 'user'>" + 
-		"<img src=" + user[i].avatar_url + " width = '80' height = '80'>" +
-		"<ul>" +
-		"<li>Login: " + user[i].login + "</li>" +
-		"<li>Id: " + user[i].id + "</li>" +
-		"</ul>" +
-		"</div>";
-
-	  }
-
-	users.innerHTML = output;
-
-
-	 }
-
-
-   }
-
-
-
-	xhr.send();
 
 
 });
